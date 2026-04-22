@@ -1,0 +1,39 @@
+services:
+  # ------ Base de Datos MySQL ------
+  db:
+    image: mysql:8.0
+    container_name: lamp_mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mi_base
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: password123
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - lamp_network
+
+  # ------ Apache + PHP ------
+  web:
+    build: .
+    container_name: lamp_web
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks: 
+      - lamp_network
+
+networks:
+  lamp_network:
+    driver: bridge
+
+volumes:
+  db_data:
+
